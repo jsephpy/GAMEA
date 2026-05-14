@@ -1,0 +1,1596 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Gobierno Autónomo Municipal de El Alto — GAMEA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+/* =============================================
+   VARIABLES Y RESET
+   ============================================= */
+:root {
+  --bg:          #F5F4F0;
+  --bg-2:        #ECEAE4;
+  --bg-dark:     #0D1117;
+  --surface:     #FFFFFF;
+  --border:      rgba(0,0,0,0.10);
+  --text:        #0D1117;
+  --text-muted:  #6B6F7A;
+  --accent:      #D22B2B;
+  --accent-rgb:  210,43,43;
+  --accent-2:    #1DAEE2;
+  --accent-2-rgb:29,174,226;
+  --bg-rgb:      245,244,240;
+
+  --text-xs:   clamp(11px, 1.2vw, 13px);
+  --text-sm:   clamp(13px, 1.4vw, 15px);
+  --text-base: clamp(15px, 1.6vw, 17px);
+  --text-lg:   clamp(18px, 2vw, 22px);
+  --text-xl:   clamp(22px, 3vw, 30px);
+  --text-2xl:  clamp(30px, 5vw, 50px);
+  --text-3xl:  clamp(42px, 7vw, 76px);
+  --text-hero: clamp(48px, 9vw, 110px);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { text-decoration: none; color: inherit; }
+img { max-width: 100%; display: block; }
+
+/* =============================================
+   CURSOR
+   ============================================= */
+.cursor {
+  width: 10px; height: 10px;
+  background: var(--accent);
+  border-radius: 50%;
+  position: fixed; pointer-events: none; z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: transform 0.15s ease, background 0.3s;
+}
+.cursor-ring {
+  width: 34px; height: 34px;
+  border: 1.5px solid var(--accent);
+  border-radius: 50%;
+  position: fixed; pointer-events: none; z-index: 9998;
+  transition: transform 0.45s cubic-bezier(0.16,1,0.3,1), width 0.3s, height 0.3s, opacity 0.3s, border-color 0.3s;
+  transform: translate(-50%, -50%);
+}
+
+/* =============================================
+   NAVBAR
+   ============================================= */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 clamp(20px, 5vw, 60px);
+  height: 72px;
+  transition: background 0.4s, backdrop-filter 0.4s, box-shadow 0.4s;
+}
+nav.transparent { background: transparent; }
+nav.scrolled {
+  background: rgba(var(--bg-rgb), 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 1px 0 var(--border);
+}
+
+.nav-logo {
+  display: flex; align-items: center; gap: 12px;
+  text-decoration: none;
+}
+.nav-logo-img {
+  height: 48px;
+  width: auto;
+  object-fit: contain;
+}
+.nav-logo-text {
+  display: flex; flex-direction: column;
+  line-height: 1.1;
+}
+.nav-logo-text span:first-child {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 15px;
+  color: var(--accent);
+  letter-spacing: -0.01em;
+}
+.nav-logo-text span:last-child {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+.nav-links {
+  display: flex; align-items: center; gap: 32px;
+  list-style: none;
+}
+.nav-links a {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--text-muted);
+  transition: color 0.2s;
+  letter-spacing: 0.02em;
+}
+.nav-links a:hover { color: var(--accent); }
+
+.nav-cta {
+  display: inline-flex; align-items: center;
+  padding: 10px 22px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 100px;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s;
+}
+.nav-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(var(--accent-rgb), 0.35);
+}
+
+/* Hamburger */
+.hamburger {
+  display: none;
+  flex-direction: column; justify-content: space-between;
+  width: 28px; height: 20px;
+  cursor: pointer; background: none; border: none; padding: 0;
+}
+.hamburger span {
+  display: block; width: 100%; height: 2px;
+  background: var(--text);
+  transition: transform 0.3s, opacity 0.3s;
+  border-radius: 2px;
+}
+.hamburger.open span:nth-child(1) { transform: translateY(9px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
+
+.mobile-menu {
+  display: none;
+  position: fixed; top: 72px; left: 0; right: 0;
+  background: rgba(var(--bg-rgb), 0.98);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 24px clamp(20px, 5vw, 60px) 32px;
+  flex-direction: column; gap: 0;
+  border-bottom: 1px solid var(--border);
+  transform: translateY(-20px); opacity: 0;
+  transition: transform 0.3s cubic-bezier(0.16,1,0.3,1), opacity 0.3s;
+}
+.mobile-menu.open {
+  display: flex; opacity: 1; transform: translateY(0);
+}
+.mobile-menu a {
+  display: block;
+  padding: 14px 0;
+  font-size: var(--text-base);
+  font-weight: 500;
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
+  transition: color 0.2s;
+}
+.mobile-menu a:hover { color: var(--accent); }
+.mobile-menu .nav-cta {
+  margin-top: 16px;
+  text-align: center;
+  justify-content: center;
+}
+
+/* =============================================
+   HERO
+   ============================================= */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex; align-items: center;
+  padding: 100px clamp(20px, 5vw, 80px) 80px;
+  overflow: hidden;
+  background: var(--bg-dark);
+}
+
+.hero-bg-blob {
+  position: absolute;
+  border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+  filter: blur(80px);
+  pointer-events: none;
+  animation: blob-morph 12s ease-in-out infinite;
+}
+.blob-1 {
+  width: 600px; height: 600px;
+  background: rgba(var(--accent-rgb), 0.18);
+  top: -100px; right: -100px;
+  animation-delay: 0s;
+}
+.blob-2 {
+  width: 400px; height: 400px;
+  background: rgba(var(--accent-2-rgb), 0.15);
+  bottom: -80px; left: 5%;
+  animation-delay: -4s;
+  animation-direction: reverse;
+}
+.blob-3 {
+  width: 300px; height: 300px;
+  background: rgba(var(--accent-rgb), 0.10);
+  top: 40%; left: 40%;
+  animation-delay: -8s;
+}
+
+@keyframes blob-morph {
+  0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+  25%       { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+  50%       { border-radius: 50% 60% 30% 60% / 30% 40% 70% 50%; }
+  75%       { border-radius: 40% 70% 60% 30% / 70% 30% 50% 60%; }
+}
+
+/* Grid pattern overlay */
+.hero-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+}
+
+.hero-content {
+  position: relative; z-index: 2;
+  max-width: 760px;
+}
+
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 7px 16px;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 100px;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.7);
+  margin-bottom: 28px;
+  backdrop-filter: blur(10px);
+}
+.hero-eyebrow-dot {
+  width: 7px; height: 7px;
+  background: var(--accent-2);
+  border-radius: 50%;
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+.hero-title {
+  font-family: 'Syne', sans-serif;
+  font-size: var(--text-hero);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  color: #fff;
+  margin-bottom: 32px;
+}
+.hero-title .accent-red { color: var(--accent); }
+.hero-title .accent-blue { color: var(--accent-2); }
+
+.hero-subtitle {
+  font-size: var(--text-lg);
+  color: rgba(255,255,255,0.55);
+  font-weight: 400;
+  line-height: 1.6;
+  max-width: 520px;
+  margin-bottom: 48px;
+}
+
+.hero-actions {
+  display: flex; align-items: center; gap: 16px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 14px 28px;
+  border-radius: 100px;
+  font-size: var(--text-sm); font-weight: 600; letter-spacing: 0.02em;
+  background: var(--accent); color: #fff;
+  border: none; cursor: pointer; text-decoration: none;
+  transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s;
+  min-height: 44px;
+}
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(var(--accent-rgb), 0.45);
+}
+.btn:active { transform: translateY(0); }
+
+.btn-outline {
+  background: transparent;
+  border: 1.5px solid rgba(255,255,255,0.25);
+  color: rgba(255,255,255,0.8);
+}
+.btn-outline:hover {
+  border-color: var(--accent-2);
+  color: var(--accent-2);
+  box-shadow: none;
+}
+
+.btn-blue {
+  background: var(--accent-2);
+}
+.btn-blue:hover {
+  box-shadow: 0 8px 24px rgba(var(--accent-2-rgb), 0.45);
+}
+
+/* Hero floating badges */
+.hero-badges {
+  position: absolute;
+  right: clamp(40px, 6vw, 120px);
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex; flex-direction: column; gap: 20px;
+  z-index: 2;
+}
+
+.hero-badge {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  backdrop-filter: blur(20px);
+  border-radius: 16px;
+  padding: 20px 24px;
+  min-width: 180px;
+  text-align: center;
+}
+.hero-badge-num {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 800;
+  color: #fff;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.hero-badge-num.red { color: var(--accent); }
+.hero-badge-num.blue { color: var(--accent-2); }
+.hero-badge-label {
+  font-size: var(--text-xs);
+  color: rgba(255,255,255,0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 500;
+}
+
+.float-1 { animation: float-a 6s ease-in-out infinite; }
+.float-2 { animation: float-b 8s ease-in-out infinite 1.2s; }
+.float-3 { animation: float-a 7s ease-in-out infinite 2.8s; }
+
+@keyframes float-a {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50%       { transform: translateY(-16px) rotate(1deg); }
+}
+@keyframes float-b {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50%       { transform: translateY(-12px) rotate(-1.2deg); }
+}
+
+/* Rainbow line */
+.rainbow-line {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg,
+    #D22B2B 0%, #FF6B35 14.28%,
+    #F7C61A 28.56%, #4CAF50 42.84%,
+    #1DAEE2 57.12%, #3F51B5 71.40%,
+    #9C27B0 85.68%, #D22B2B 100%
+  );
+}
+
+/* =============================================
+   MARQUEE
+   ============================================= */
+.marquee-section {
+  background: var(--accent);
+  padding: 18px 0;
+  overflow: hidden;
+  position: relative;
+}
+.marquee-section-2 {
+  background: var(--accent-2);
+  padding: 14px 0;
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 22s linear infinite;
+  gap: 0;
+}
+.marquee-track-rev {
+  animation: marquee-rev 18s linear infinite;
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@keyframes marquee-rev {
+  from { transform: translateX(-50%); }
+  to   { transform: translateX(0); }
+}
+
+.marquee-item {
+  display: inline-flex; align-items: center; gap: 12px;
+  padding: 0 28px;
+  font-family: 'Syne', sans-serif;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #fff;
+  white-space: nowrap;
+}
+.marquee-sep {
+  color: rgba(255,255,255,0.4);
+  font-size: 18px;
+}
+
+/* =============================================
+   SERVICIOS
+   ============================================= */
+.services {
+  padding: clamp(80px, 12vw, 140px) clamp(20px, 5vw, 80px);
+  background: var(--bg);
+}
+
+.section-label {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 20px;
+}
+.section-label::before {
+  content: '';
+  display: block;
+  width: 24px; height: 2px;
+  background: var(--accent);
+}
+
+.section-title {
+  font-family: 'Syne', sans-serif;
+  font-size: var(--text-2xl);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  color: var(--text);
+  margin-bottom: 16px;
+  max-width: 600px;
+}
+
+.section-subtitle {
+  font-size: var(--text-base);
+  color: var(--text-muted);
+  line-height: 1.7;
+  max-width: 520px;
+  margin-bottom: 56px;
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+  gap: clamp(16px, 2.5vw, 24px);
+}
+
+.service-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 32px 28px;
+  display: flex; flex-direction: column; gap: 16px;
+  position: relative; overflow: hidden;
+  cursor: default;
+  transition: transform 0.3s cubic-bezier(0.16,1,0.3,1), box-shadow 0.3s, border-color 0.3s;
+}
+.service-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 60px rgba(var(--accent-rgb), 0.10);
+  border-color: rgba(var(--accent-rgb), 0.25);
+}
+.service-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--accent);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.3s cubic-bezier(0.16,1,0.3,1);
+}
+.service-card:hover::before { transform: scaleX(1); }
+
+.service-icon {
+  width: 52px; height: 52px;
+  background: rgba(var(--accent-rgb), 0.08);
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.3s;
+}
+.service-card:hover .service-icon {
+  background: rgba(var(--accent-rgb), 0.14);
+}
+
+.service-icon svg {
+  width: 26px; height: 26px;
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.service-icon.blue svg { stroke: var(--accent-2); }
+.service-icon.blue { background: rgba(var(--accent-2-rgb), 0.08); }
+.service-card:hover .service-icon.blue { background: rgba(var(--accent-2-rgb), 0.14); }
+.service-card.blue-card::before { background: var(--accent-2); }
+.service-card.blue-card:hover {
+  box-shadow: 0 20px 60px rgba(var(--accent-2-rgb), 0.12);
+  border-color: rgba(var(--accent-2-rgb), 0.25);
+}
+
+.service-title {
+  font-family: 'Syne', sans-serif;
+  font-size: var(--text-lg);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  line-height: 1.2;
+}
+.service-desc {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  line-height: 1.65;
+  flex: 1;
+}
+.service-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+  transition: gap 0.2s;
+}
+.service-card.blue-card .service-link { color: var(--accent-2); }
+.service-card:hover .service-link { gap: 10px; }
+
+/* =============================================
+   FEATURED / PROPUESTA ESTRELLA
+   ============================================= */
+.featured {
+  padding: clamp(60px, 10vw, 120px) clamp(20px, 5vw, 80px);
+  background: var(--bg-dark);
+  position: relative; overflow: hidden;
+}
+
+.featured-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(40px, 6vw, 80px);
+  align-items: center;
+  position: relative; z-index: 2;
+}
+
+.featured-label { color: var(--accent-2); }
+.featured-label::before { background: var(--accent-2); }
+
+.featured .section-title { color: #fff; max-width: 100%; }
+.featured .section-subtitle { color: rgba(255,255,255,0.55); max-width: 100%; }
+
+.featured-visual {
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.featured-card-big {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.10);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  padding: 40px 36px;
+  width: 100%;
+  max-width: 380px;
+}
+
+.featured-steps {
+  display: flex; flex-direction: column; gap: 20px;
+}
+
+.featured-step {
+  display: flex; align-items: flex-start; gap: 16px;
+}
+.step-num {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  background: rgba(var(--accent-rgb), 0.2);
+  color: var(--accent);
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 15px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.step-num.blue {
+  background: rgba(var(--accent-2-rgb), 0.2);
+  color: var(--accent-2);
+}
+.step-info-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: var(--text-sm);
+  color: rgba(255,255,255,0.9);
+  margin-bottom: 4px;
+}
+.step-info-desc {
+  font-size: var(--text-xs);
+  color: rgba(255,255,255,0.45);
+  line-height: 1.5;
+}
+
+.featured-badge {
+  position: absolute;
+  top: -20px; right: -20px;
+  background: var(--accent);
+  color: #fff;
+  padding: 12px 18px;
+  border-radius: 14px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 13px;
+  line-height: 1.2;
+  text-align: center;
+  transform: rotate(6deg);
+  animation: badge-pulse 3s ease-in-out infinite;
+  box-shadow: 0 8px 24px rgba(var(--accent-rgb), 0.4);
+}
+@keyframes badge-pulse {
+  0%, 100% { transform: rotate(6deg) scale(1); }
+  50% { transform: rotate(6deg) scale(1.05); }
+}
+
+.featured-blob {
+  position: absolute;
+  width: 500px; height: 500px;
+  background: rgba(var(--accent-rgb), 0.12);
+  border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+  filter: blur(80px);
+  right: -100px; top: -100px;
+  pointer-events: none;
+  animation: blob-morph 14s ease-in-out infinite;
+}
+
+/* =============================================
+   STATS
+   ============================================= */
+.stats {
+  padding: clamp(80px, 12vw, 140px) clamp(20px, 5vw, 80px);
+  background: var(--bg-2);
+}
+
+.stats-header {
+  text-align: center;
+  margin-bottom: 64px;
+}
+.stats-header .section-label {
+  justify-content: center;
+}
+.stats-header .section-label::before { display: none; }
+.stats-header .section-title { margin: 0 auto 16px; text-align: center; max-width: 100%; }
+.stats-header .section-subtitle { margin: 0 auto; text-align: center; }
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+  gap: clamp(16px, 3vw, 32px);
+}
+
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 36px 28px;
+  text-align: center;
+  transition: transform 0.3s cubic-bezier(0.16,1,0.3,1), box-shadow 0.3s;
+}
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.08);
+}
+
+.stat-num {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(38px, 6vw, 62px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin-bottom: 10px;
+}
+.stat-num.red { color: var(--accent); }
+.stat-num.blue { color: var(--accent-2); }
+
+.stat-label {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+/* =============================================
+   NOTICIAS
+   ============================================= */
+.news {
+  padding: clamp(80px, 12vw, 140px) clamp(20px, 5vw, 80px);
+  background: var(--bg);
+}
+
+.news-header {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  margin-bottom: 48px;
+  flex-wrap: wrap; gap: 24px;
+}
+.news-header .section-title { margin-bottom: 0; }
+
+.news-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+  gap: clamp(16px, 2.5vw, 24px);
+}
+
+.news-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex; flex-direction: column;
+  transition: transform 0.3s cubic-bezier(0.16,1,0.3,1), box-shadow 0.3s;
+}
+.news-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.10);
+}
+
+.news-thumb {
+  aspect-ratio: 16/9;
+  overflow: hidden;
+  position: relative;
+}
+.news-thumb-bg {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: clamp(32px, 5vw, 52px);
+  letter-spacing: -0.04em;
+  transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
+}
+.news-card:hover .news-thumb-bg { transform: scale(1.04); }
+.thumb-1 { background: linear-gradient(135deg, #D22B2B 0%, #8B0000 100%); color: rgba(255,255,255,0.15); }
+.thumb-2 { background: linear-gradient(135deg, #1DAEE2 0%, #0D5C7A 100%); color: rgba(255,255,255,0.15); }
+.thumb-3 { background: linear-gradient(135deg, #1A1A2E 0%, #D22B2B 100%); color: rgba(255,255,255,0.15); }
+
+.news-cat {
+  position: absolute; top: 16px; left: 16px;
+  padding: 5px 12px;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(10px);
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.news-body {
+  padding: 24px 24px 28px;
+  flex: 1; display: flex; flex-direction: column; gap: 12px;
+}
+.news-date {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  font-weight: 500;
+  letter-spacing: 0.05em;
+}
+.news-title {
+  font-family: 'Syne', sans-serif;
+  font-size: var(--text-base);
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  flex: 1;
+}
+.news-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+  transition: gap 0.2s;
+}
+.news-card:hover .news-link { gap: 10px; }
+
+/* =============================================
+   CTA BAND
+   ============================================= */
+.cta-band {
+  padding: clamp(80px, 12vw, 140px) clamp(20px, 5vw, 80px);
+  background: var(--accent);
+  position: relative; overflow: hidden;
+  text-align: center;
+}
+.cta-band-bg {
+  position: absolute;
+  width: 800px; height: 800px;
+  background: rgba(0,0,0,0.12);
+  border-radius: 50%;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.cta-band-content { position: relative; z-index: 2; }
+.cta-band-label {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.7);
+  margin-bottom: 20px;
+}
+.cta-band-label::before {
+  content: '';
+  display: block;
+  width: 24px; height: 2px;
+  background: rgba(255,255,255,0.5);
+}
+.cta-band-label::after {
+  content: '';
+  display: block;
+  width: 24px; height: 2px;
+  background: rgba(255,255,255,0.5);
+}
+.cta-band-title {
+  font-family: 'Syne', sans-serif;
+  font-size: var(--text-2xl);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: #fff;
+  line-height: 1.1;
+  margin: 0 auto 20px;
+  max-width: 640px;
+}
+.cta-band-sub {
+  font-size: var(--text-base);
+  color: rgba(255,255,255,0.7);
+  margin: 0 auto 40px;
+  max-width: 480px;
+  line-height: 1.6;
+}
+.cta-band-actions {
+  display: flex; align-items: center; justify-content: center; gap: 16px;
+  flex-wrap: wrap;
+}
+.btn-white {
+  background: #fff;
+  color: var(--accent);
+}
+.btn-white:hover {
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+  transform: translateY(-2px);
+}
+.btn-white-outline {
+  background: transparent;
+  border: 1.5px solid rgba(255,255,255,0.4);
+  color: #fff;
+}
+.btn-white-outline:hover {
+  border-color: #fff;
+  box-shadow: none;
+}
+
+/* =============================================
+   FOOTER
+   ============================================= */
+footer {
+  background: var(--bg-dark);
+  padding: clamp(60px, 8vw, 100px) clamp(20px, 5vw, 80px) clamp(32px, 4vw, 48px);
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: clamp(32px, 4vw, 60px);
+  padding-bottom: 48px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  margin-bottom: 32px;
+}
+
+.footer-brand .nav-logo-text span:first-child { color: var(--accent); }
+.footer-brand .nav-logo-text span:last-child { color: rgba(255,255,255,0.4); }
+
+.footer-desc {
+  font-size: var(--text-sm);
+  color: rgba(255,255,255,0.4);
+  line-height: 1.7;
+  margin: 20px 0 24px;
+}
+
+.footer-socials {
+  display: flex; gap: 12px;
+}
+.footer-social {
+  width: 40px; height: 40px;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  color: rgba(255,255,255,0.5);
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+.footer-social:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(var(--accent-rgb), 0.1);
+}
+
+.footer-col-title {
+  font-family: 'Syne', sans-serif;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.04em;
+  margin-bottom: 20px;
+}
+.footer-links {
+  list-style: none;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.footer-links a {
+  font-size: var(--text-sm);
+  color: rgba(255,255,255,0.45);
+  transition: color 0.2s;
+}
+.footer-links a:hover { color: var(--accent-2); }
+
+.footer-bottom {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 16px;
+}
+.footer-copy {
+  font-size: var(--text-xs);
+  color: rgba(255,255,255,0.3);
+  line-height: 1.6;
+}
+.footer-copy strong { color: rgba(255,255,255,0.5); font-weight: 600; }
+
+.footer-rainbow {
+  height: 3px;
+  background: linear-gradient(90deg,
+    #D22B2B 0%, #FF6B35 14.28%,
+    #F7C61A 28.56%, #4CAF50 42.84%,
+    #1DAEE2 57.12%, #3F51B5 71.40%,
+    #9C27B0 85.68%, #D22B2B 100%
+  );
+  margin-bottom: 0;
+}
+
+/* =============================================
+   REVEAL SCROLL
+   ============================================= */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.65s cubic-bezier(0.16,1,0.3,1),
+              transform 0.65s cubic-bezier(0.16,1,0.3,1);
+}
+[data-reveal].revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+[data-reveal="left"] { transform: translateX(-32px); }
+[data-reveal="right"] { transform: translateX(32px); }
+[data-reveal="scale"] { transform: scale(0.92); opacity: 0; }
+[data-reveal="left"].revealed,
+[data-reveal="right"].revealed,
+[data-reveal="scale"].revealed { transform: none; opacity: 1; }
+
+/* =============================================
+   RESPONSIVE
+   ============================================= */
+@media (max-width: 900px) {
+  .hero-badges { display: none; }
+  .featured-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 768px) {
+  .nav-links, .nav-cta { display: none; }
+  .hamburger { display: flex; }
+  .hero { padding: 100px 20px 80px; }
+  .hero-title { font-size: clamp(42px, 12vw, 70px); }
+  .footer-grid { grid-template-columns: 1fr; }
+  .news-grid { grid-template-columns: 1fr; }
+  .footer-bottom { flex-direction: column; text-align: center; }
+}
+
+@media (max-width: 480px) {
+  .hero-actions { flex-direction: column; align-items: flex-start; }
+  .hero-actions .btn { width: 100%; justify-content: center; }
+  .cta-band-actions { flex-direction: column; }
+  .cta-band-actions .btn { width: 100%; max-width: 300px; }
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAVBAR -->
+<nav id="navbar" class="transparent">
+  <a href="https://www.elalto.gob.bo/" class="nav-logo">
+    <img
+      src="/mnt/user-data/uploads/286.jpg"
+      alt="Logo GAMEA El Alto"
+      class="nav-logo-img"
+    />
+  </a>
+  <ul class="nav-links">
+    <li><a href="https://www.elalto.gob.bo/">Inicio</a></li>
+    <li><a href="https://www.elalto.gob.bo/noticias/">Noticias</a></li>
+    <li><a href="https://www.elalto.gob.bo/transparencia/">Transparencia</a></li>
+    <li><a href="https://www.elalto.gob.bo/tramites/">Trámites</a></li>
+    <li><a href="https://www.elalto.gob.bo/contacto/">Contacto</a></li>
+  </ul>
+  <a href="https://www.elalto.gob.bo/tramites/" class="nav-cta">Trámites en Línea</a>
+  <button class="hamburger" id="hamburger" aria-label="Menú">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="https://www.elalto.gob.bo/">Inicio</a>
+  <a href="https://www.elalto.gob.bo/noticias/">Noticias</a>
+  <a href="https://www.elalto.gob.bo/transparencia/">Transparencia</a>
+  <a href="https://www.elalto.gob.bo/tramites/">Trámites</a>
+  <a href="https://www.elalto.gob.bo/contacto/">Contacto</a>
+  <a href="https://www.elalto.gob.bo/tramites/" class="nav-cta">Trámites en Línea</a>
+</div>
+
+<main>
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-bg-blob blob-1"></div>
+  <div class="hero-bg-blob blob-2"></div>
+  <div class="hero-bg-blob blob-3"></div>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow">
+      <span class="hero-eyebrow-dot"></span>
+      Gobierno Autónomo Municipal
+    </div>
+    <h1 class="hero-title">
+      <span class="accent-red">El Alto</span><br />
+      <span class="accent-blue">Ciudad</span><br />
+      del Futuro
+    </h1>
+    <p class="hero-subtitle">
+      Trabajamos cada día por una ciudad más justa, moderna e inclusiva para todos los alteños y alteñas.
+    </p>
+    <div class="hero-actions">
+      <a href="https://www.elalto.gob.bo/tramites/" class="btn">Ver Trámites</a>
+      <a href="https://www.elalto.gob.bo/noticias/" class="btn btn-outline">Últimas Noticias</a>
+    </div>
+  </div>
+
+  <!-- Floating badges -->
+  <div class="hero-badges">
+    <div class="hero-badge float-1">
+      <div class="hero-badge-num red" data-target="900000" data-suffix="+">900,000+</div>
+      <div class="hero-badge-label">Habitantes</div>
+    </div>
+    <div class="hero-badge float-2">
+      <div class="hero-badge-num blue" data-target="14">14</div>
+      <div class="hero-badge-label">Distritos</div>
+    </div>
+    <div class="hero-badge float-3">
+      <div class="hero-badge-num" style="color:#fff;" data-target="1988">1988</div>
+      <div class="hero-badge-label">Año de fundación</div>
+    </div>
+  </div>
+
+  <div class="rainbow-line"></div>
+</section>
+
+<!-- MARQUEE 1 -->
+<div class="marquee-section">
+  <div class="marquee-track">
+    <span class="marquee-item">Obras Públicas <span class="marquee-sep">/</span></span>
+    <span class="marquee-item">Salud Municipal <span class="marquee-sep">/</span></span>
+    <span class="marquee-item">Educación <span class="marquee-sep">/</span></span>
+    <span class="marquee-item">Trámites Digitales <span class="marquee-sep">/</span></span>
+    <span class="marquee-item">Transparencia <span class="marquee-sep">/</span></span>
+    <span class="marquee-item">Desarrollo Económico <span class="marquee-sep">/</span></span>
+    <span class="marquee-item">Cultura y Deporte <span class="marquee-sep">/</span></span>
+    <span class="marquee-item">Medio Ambiente <span class="marquee-sep">/</span></span>
+    <span class="marquee-item">Obras Públicas <span class="marquee-sep">/</span></span>
+    <span class="marquee-item">Salud Municipal <span class="marquee-sep">/</span></span>
+    <span class="marquee-item">Educación <span class="marquee-sep">/</span></span>
+    <span class="marquee-item">Trámites Digitales <span class="marquee-sep">/</span></span>
+    <span class="marquee-item">Transparencia <span class="marquee-sep">/</span></span>
+    <span class="marquee-item">Desarrollo Económico <span class="marquee-sep">/</span></span>
+    <span class="marquee-item">Cultura y Deporte <span class="marquee-sep">/</span></span>
+    <span class="marquee-item">Medio Ambiente <span class="marquee-sep">/</span></span>
+  </div>
+</div>
+
+<!-- MARQUEE 2 -->
+<div class="marquee-section marquee-section-2">
+  <div class="marquee-track marquee-track-rev">
+    <span class="marquee-item">GAMEA <span class="marquee-sep">—</span></span>
+    <span class="marquee-item">Ciudad Productiva <span class="marquee-sep">—</span></span>
+    <span class="marquee-item">Juntos por El Alto <span class="marquee-sep">—</span></span>
+    <span class="marquee-item">Gobierno Eficiente <span class="marquee-sep">—</span></span>
+    <span class="marquee-item">Bolivia <span class="marquee-sep">—</span></span>
+    <span class="marquee-item">La Paz <span class="marquee-sep">—</span></span>
+    <span class="marquee-item">Alcaldía de El Alto <span class="marquee-sep">—</span></span>
+    <span class="marquee-item">GAMEA <span class="marquee-sep">—</span></span>
+    <span class="marquee-item">Ciudad Productiva <span class="marquee-sep">—</span></span>
+    <span class="marquee-item">Juntos por El Alto <span class="marquee-sep">—</span></span>
+    <span class="marquee-item">Gobierno Eficiente <span class="marquee-sep">—</span></span>
+    <span class="marquee-item">Bolivia <span class="marquee-sep">—</span></span>
+    <span class="marquee-item">La Paz <span class="marquee-sep">—</span></span>
+    <span class="marquee-item">Alcaldía de El Alto <span class="marquee-sep">—</span></span>
+  </div>
+</div>
+
+<!-- SERVICIOS -->
+<section class="services" id="servicios">
+  <div data-reveal>
+    <div class="section-label">Servicios Municipales</div>
+    <h2 class="section-title">Lo que hacemos por ti y tu familia</h2>
+    <p class="section-subtitle">El Gobierno Municipal de El Alto pone a tu disposición una amplia gama de servicios y trámites para mejorar tu calidad de vida.</p>
+  </div>
+
+  <div class="services-grid">
+    <div class="service-card" data-reveal style="--delay:0ms">
+      <div class="service-icon">
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </div>
+      <h3 class="service-title">Obras e Infraestructura</h3>
+      <p class="service-desc">Construcción y mantenimiento de calles, avenidas, puentes y espacios públicos para mejorar la movilidad urbana en El Alto.</p>
+      <a href="https://www.elalto.gob.bo/" class="service-link">Ver proyectos &rarr;</a>
+    </div>
+
+    <div class="service-card blue-card" data-reveal style="--delay:80ms">
+      <div class="service-icon blue">
+        <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.61 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.09 6.09l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      </div>
+      <h3 class="service-title">Salud Municipal</h3>
+      <p class="service-desc">Red de centros de salud y hospitales municipales que brindan atención médica accesible y de calidad a todos los vecinos de El Alto.</p>
+      <a href="https://www.elalto.gob.bo/" class="service-link">Centros de salud &rarr;</a>
+    </div>
+
+    <div class="service-card" data-reveal style="--delay:160ms">
+      <div class="service-icon">
+        <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      </div>
+      <h3 class="service-title">Educación</h3>
+      <p class="service-desc">Apoyo a unidades educativas, becas, infraestructura escolar y programas de formación para jóvenes y adultos de la ciudad.</p>
+      <a href="https://www.elalto.gob.bo/" class="service-link">Programas educativos &rarr;</a>
+    </div>
+
+    <div class="service-card blue-card" data-reveal style="--delay:240ms">
+      <div class="service-icon blue">
+        <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      </div>
+      <h3 class="service-title">Trámites en Línea</h3>
+      <p class="service-desc">Realiza tus trámites municipales desde casa. Certificados, pagos, permisos y mucho más de forma digital y segura.</p>
+      <a href="https://www.elalto.gob.bo/tramites/" class="service-link">Ir a trámites &rarr;</a>
+    </div>
+
+    <div class="service-card" data-reveal style="--delay:320ms">
+      <div class="service-icon">
+        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </div>
+      <h3 class="service-title">Desarrollo Social</h3>
+      <p class="service-desc">Programas de apoyo a adultos mayores, personas con discapacidad, niñez y comunidades vulnerables de nuestra ciudad.</p>
+      <a href="https://www.elalto.gob.bo/" class="service-link">Ver programas &rarr;</a>
+    </div>
+
+    <div class="service-card blue-card" data-reveal style="--delay:400ms">
+      <div class="service-icon blue">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      </div>
+      <h3 class="service-title">Transparencia</h3>
+      <p class="service-desc">Accede a información pública, presupuestos, contratos y toda la gestión del Gobierno Municipal de El Alto de forma abierta.</p>
+      <a href="https://www.elalto.gob.bo/transparencia/" class="service-link">Portal de transparencia &rarr;</a>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURED -->
+<section class="featured" id="gobierno">
+  <div class="featured-blob"></div>
+  <div class="featured-grid">
+    <div data-reveal="left">
+      <div class="section-label featured-label">Gestión Municipal</div>
+      <h2 class="section-title">Un gobierno cercano al ciudadano</h2>
+      <p class="section-subtitle">El Gobierno Autónomo Municipal de El Alto trabaja con transparencia, eficiencia y compromiso para transformar nuestra ciudad en un referente de desarrollo en Bolivia.</p>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:40px;">
+        <a href="https://www.elalto.gob.bo/autoridades/" class="btn btn-blue">Conocer Autoridades</a>
+        <a href="https://www.elalto.gob.bo/transparencia/" class="btn btn-outline">Portal de Transparencia</a>
+      </div>
+    </div>
+    <div class="featured-visual" data-reveal="right">
+      <div class="featured-badge">GAMEA<br />2024</div>
+      <div class="featured-card-big float-1">
+        <div class="featured-steps">
+          <div class="featured-step">
+            <div class="step-num">01</div>
+            <div>
+              <div class="step-info-title">Plan de Desarrollo Municipal</div>
+              <div class="step-info-desc">Planificación estratégica 2021–2025 para el crecimiento sostenible de El Alto.</div>
+            </div>
+          </div>
+          <div class="featured-step">
+            <div class="step-num blue">02</div>
+            <div>
+              <div class="step-info-title">Presupuesto Participativo</div>
+              <div class="step-info-desc">Los vecinos deciden las prioridades de inversión en sus barrios y distritos.</div>
+            </div>
+          </div>
+          <div class="featured-step">
+            <div class="step-num">03</div>
+            <div>
+              <div class="step-info-title">Rendición de Cuentas</div>
+              <div class="step-info-desc">Informes periódicos de gestión y uso de recursos públicos al alcance de todos.</div>
+            </div>
+          </div>
+          <div class="featured-step">
+            <div class="step-num blue">04</div>
+            <div>
+              <div class="step-info-title">Atención al Ciudadano</div>
+              <div class="step-info-desc">Múltiples canales para que los alteños accedan a sus derechos y servicios municipales.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="stats" id="cifras">
+  <div class="stats-header">
+    <div class="section-label">El Alto en Cifras</div>
+    <h2 class="section-title">Una ciudad con historia y futuro</h2>
+    <p class="section-subtitle">El Alto es la segunda ciudad más grande de Bolivia, un motor económico y cultural de enorme relevancia nacional.</p>
+  </div>
+  <div class="stats-grid">
+    <div class="stat-card" data-reveal>
+      <div class="stat-num red" data-target="900000" data-suffix="+">0</div>
+      <div class="stat-label">Habitantes en El Alto</div>
+    </div>
+    <div class="stat-card" data-reveal>
+      <div class="stat-num blue" data-target="14">0</div>
+      <div class="stat-label">Distritos Municipales</div>
+    </div>
+    <div class="stat-card" data-reveal>
+      <div class="stat-num red" data-target="351" data-suffix=" km²">0</div>
+      <div class="stat-label">Superficie del Municipio</div>
+    </div>
+    <div class="stat-card" data-reveal>
+      <div class="stat-num blue" data-target="4150" data-suffix=" m">0</div>
+      <div class="stat-label">Altitud sobre el nivel del mar</div>
+    </div>
+    <div class="stat-card" data-reveal>
+      <div class="stat-num red" data-target="1988">0</div>
+      <div class="stat-label">Año de fundación oficial</div>
+    </div>
+    <div class="stat-card" data-reveal>
+      <div class="stat-num blue" data-target="600" data-suffix="+">0</div>
+      <div class="stat-label">Unidades educativas</div>
+    </div>
+  </div>
+</section>
+
+<!-- NOTICIAS -->
+<section class="news" id="noticias">
+  <div class="news-header">
+    <div>
+      <div class="section-label" data-reveal>Últimas Noticias</div>
+      <h2 class="section-title" data-reveal>Lo que pasa en El Alto</h2>
+    </div>
+    <a href="https://www.elalto.gob.bo/noticias/" class="btn" data-reveal>Ver todas las noticias</a>
+  </div>
+  <div class="news-grid">
+    <article class="news-card" data-reveal>
+      <div class="news-thumb">
+        <div class="news-thumb-bg thumb-1">GAMEA</div>
+        <div class="news-cat">Obras</div>
+      </div>
+      <div class="news-body">
+        <div class="news-date">Mayo 2025</div>
+        <h3 class="news-title">Alcaldía ejecuta nuevos proyectos de pavimentación en distintos distritos de El Alto</h3>
+        <a href="https://www.elalto.gob.bo/noticias/" class="news-link">Leer más &rarr;</a>
+      </div>
+    </article>
+    <article class="news-card" data-reveal>
+      <div class="news-thumb">
+        <div class="news-thumb-bg thumb-2">SALUD</div>
+        <div class="news-cat">Salud</div>
+      </div>
+      <div class="news-body">
+        <div class="news-date">Mayo 2025</div>
+        <h3 class="news-title">GAMEA fortalece la red de salud con equipamiento moderno en centros municipales</h3>
+        <a href="https://www.elalto.gob.bo/noticias/" class="news-link">Leer más &rarr;</a>
+      </div>
+    </article>
+    <article class="news-card" data-reveal>
+      <div class="news-thumb">
+        <div class="news-thumb-bg thumb-3">EDU</div>
+        <div class="news-cat">Educación</div>
+      </div>
+      <div class="news-body">
+        <div class="news-date">Abril 2025</div>
+        <h3 class="news-title">Municipio entrega infraestructura escolar renovada a unidades educativas del norte</h3>
+        <a href="https://www.elalto.gob.bo/noticias/" class="news-link">Leer más &rarr;</a>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- CTA BAND -->
+<section class="cta-band">
+  <div class="cta-band-bg"></div>
+  <div class="cta-band-content" data-reveal="scale">
+    <div class="cta-band-label">Gobierno Municipal</div>
+    <h2 class="cta-band-title">Realiza tus trámites sin salir de casa</h2>
+    <p class="cta-band-sub">Accede a todos los servicios municipales de El Alto desde cualquier dispositivo, en cualquier momento.</p>
+    <div class="cta-band-actions">
+      <a href="https://www.elalto.gob.bo/tramites/" class="btn btn-white">Iniciar Trámite</a>
+      <a href="https://www.elalto.gob.bo/contacto/" class="btn btn-white-outline">Contáctanos</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="https://www.elalto.gob.bo/" class="nav-logo" style="margin-bottom:0;">
+        <img src="/mnt/user-data/uploads/286.jpg" alt="Logo GAMEA" class="nav-logo-img" />
+        <div class="nav-logo-text">
+          <span>GAMEA</span>
+          <span>Gobierno Autónomo Municipal de El Alto</span>
+        </div>
+      </a>
+      <p class="footer-desc">Trabajamos por una El Alto más justa, moderna e inclusiva. Tu alcaldía al servicio de todos los alteños y alteñas de Bolivia.</p>
+      <div class="footer-socials">
+        <a href="https://www.elalto.gob.bo/" class="footer-social" aria-label="Facebook">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+        </a>
+        <a href="https://www.elalto.gob.bo/" class="footer-social" aria-label="Twitter/X">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg>
+        </a>
+        <a href="https://www.elalto.gob.bo/" class="footer-social" aria-label="YouTube">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-1.96C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.4 19.54C5.12 20 12 20 12 20s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="#0d1117"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div>
+      <div class="footer-col-title">Servicios</div>
+      <ul class="footer-links">
+        <li><a href="https://www.elalto.gob.bo/tramites/">Trámites en Línea</a></li>
+        <li><a href="https://www.elalto.gob.bo/">Obras Públicas</a></li>
+        <li><a href="https://www.elalto.gob.bo/">Salud Municipal</a></li>
+        <li><a href="https://www.elalto.gob.bo/">Educación</a></li>
+        <li><a href="https://www.elalto.gob.bo/">Desarrollo Social</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <div class="footer-col-title">Institución</div>
+      <ul class="footer-links">
+        <li><a href="https://www.elalto.gob.bo/">Autoridades</a></li>
+        <li><a href="https://www.elalto.gob.bo/transparencia/">Transparencia</a></li>
+        <li><a href="https://www.elalto.gob.bo/noticias/">Noticias</a></li>
+        <li><a href="https://www.elalto.gob.bo/">Licitaciones</a></li>
+        <li><a href="https://www.elalto.gob.bo/">Normativa</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <div class="footer-col-title">Contacto</div>
+      <ul class="footer-links">
+        <li><a href="https://www.elalto.gob.bo/contacto/">Formulario de contacto</a></li>
+        <li><a href="https://www.elalto.gob.bo/">El Alto, La Paz, Bolivia</a></li>
+        <li><a href="https://www.elalto.gob.bo/feed/">RSS de noticias</a></li>
+        <li><a href="https://www.elalto.gob.bo/">Mapa del sitio</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <div class="footer-copy">
+      &copy; 2025 <strong>Gobierno Autónomo Municipal de El Alto — GAMEA</strong>. Todos los derechos reservados.<br />
+      El Alto, Departamento de La Paz, Estado Plurinacional de Bolivia.
+    </div>
+    <div class="footer-copy">
+      <a href="https://www.elalto.gob.bo/tramites/" style="color:rgba(255,255,255,0.4);transition:color 0.2s;" onmouseover="this.style.color='#1DAEE2'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">Trámites</a>
+      &nbsp;&nbsp;·&nbsp;&nbsp;
+      <a href="https://www.elalto.gob.bo/transparencia/" style="color:rgba(255,255,255,0.4);transition:color 0.2s;" onmouseover="this.style.color='#1DAEE2'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">Transparencia</a>
+      &nbsp;&nbsp;·&nbsp;&nbsp;
+      <a href="https://www.elalto.gob.bo/contacto/" style="color:rgba(255,255,255,0.4);transition:color 0.2s;" onmouseover="this.style.color='#1DAEE2'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">Contacto</a>
+    </div>
+  </div>
+</footer>
+<div class="footer-rainbow"></div>
+
+<script>
+/* =============================================
+   CURSOR
+   ============================================= */
+const cursor = document.getElementById('cursor');
+const cursorRing = document.getElementById('cursorRing');
+let mouseX = 0, mouseY = 0;
+let ringX = 0, ringY = 0;
+
+document.addEventListener('mousemove', e => {
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+  cursor.style.left = mouseX + 'px';
+  cursor.style.top = mouseY + 'px';
+});
+
+(function animateCursor() {
+  ringX += (mouseX - ringX) * 0.12;
+  ringY += (mouseY - ringY) * 0.12;
+  cursorRing.style.left = ringX + 'px';
+  cursorRing.style.top = ringY + 'px';
+  requestAnimationFrame(animateCursor);
+})();
+
+document.querySelectorAll('a, button').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    cursorRing.style.width = '54px';
+    cursorRing.style.height = '54px';
+    cursorRing.style.opacity = '0.5';
+    cursorRing.style.borderColor = 'var(--accent-2)';
+    cursor.style.background = 'var(--accent-2)';
+  });
+  el.addEventListener('mouseleave', () => {
+    cursorRing.style.width = '34px';
+    cursorRing.style.height = '34px';
+    cursorRing.style.opacity = '1';
+    cursorRing.style.borderColor = 'var(--accent)';
+    cursor.style.background = 'var(--accent)';
+  });
+});
+
+/* =============================================
+   NAVBAR
+   ============================================= */
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 60) {
+    navbar.classList.add('scrolled');
+    navbar.classList.remove('transparent');
+  } else {
+    navbar.classList.remove('scrolled');
+    navbar.classList.add('transparent');
+  }
+}, { passive: true });
+
+/* =============================================
+   HAMBURGER
+   ============================================= */
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+hamburger.addEventListener('click', () => {
+  hamburger.classList.toggle('open');
+  mobileMenu.classList.toggle('open');
+});
+document.querySelectorAll('.mobile-menu a').forEach(link => {
+  link.addEventListener('click', () => {
+    hamburger.classList.remove('open');
+    mobileMenu.classList.remove('open');
+  });
+});
+
+/* =============================================
+   REVEAL AT SCROLL
+   ============================================= */
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) {
+      const delay = parseInt(entry.target.style.getPropertyValue('--delay')) || 0;
+      setTimeout(() => {
+        entry.target.classList.add('revealed');
+      }, delay);
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.10 });
+
+document.querySelectorAll('[data-reveal]').forEach((el, i) => {
+  if (!el.style.getPropertyValue('--delay')) {
+    el.style.setProperty('--delay', (i % 5) * 80 + 'ms');
+  }
+  revealObserver.observe(el);
+});
+
+/* =============================================
+   ANIMATED COUNTERS
+   ============================================= */
+function animateCounter(el) {
+  const raw = el.dataset.target;
+  const target = parseInt(raw.replace(/[^0-9]/g, ''));
+  const suffix = el.dataset.suffix || '';
+  const duration = 2000;
+  const start = performance.now();
+  const update = (time) => {
+    const progress = Math.min((time - start) / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const val = Math.floor(eased * target);
+    el.textContent = val.toLocaleString('es-BO') + (progress >= 1 ? suffix : '');
+    if (progress < 1) requestAnimationFrame(update);
+  };
+  requestAnimationFrame(update);
+}
+
+const counterObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      animateCounter(entry.target);
+      counterObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.4 });
+
+document.querySelectorAll('[data-target]').forEach(el => {
+  counterObserver.observe(el);
+});
+
+/* =============================================
+   PARALLAX EN HERO
+   ============================================= */
+window.addEventListener('scroll', () => {
+  const sy = window.scrollY;
+  document.querySelectorAll('.hero-bg-blob').forEach((el, i) => {
+    const speed = [0.15, 0.25, 0.2][i] || 0.2;
+    el.style.transform = `translateY(${sy * speed}px)`;
+  });
+}, { passive: true });
+</script>
+</body>
+</html>
